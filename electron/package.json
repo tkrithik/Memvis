@@ -1,0 +1,55 @@
+{
+  "name": "memvis",
+  "productName": "memvis",
+  "version": "1.0.0",
+  "description": "C Memory Visualizer by Krithik Tamilvanan",
+  "main": "src/main.js",
+  "scripts": {
+    "start":    "electron .",
+    "dist":     "bash scripts/make-icns.sh && electron-builder --mac",
+    "dist:dmg": "bash scripts/make-icns.sh && electron-builder --mac dmg",
+    "dist:mas": "bash scripts/make-icns.sh && electron-builder --mac mas"
+  },
+  "build": {
+    "appId": "com.krithiktamilvanan.memvis",
+    "productName": "memvis",
+    "copyright": "© 2025 Krithik Tamilvanan. All rights reserved.",
+    "directories": { "output": "dist" },
+    "files": ["src/**/*", "package.json"],
+    "extraResources": [
+      { "from": "../backend/", "to": "backend/", "filter": ["memvis_backend.c", "memvis_backend"] }
+    ],
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "icon": "build/icon.icns",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mas.plist",
+      "entitlementsInherit": "build/entitlements.mas.inherit.plist",
+      "target": [
+        { "target": "dmg",  "arch": ["arm64", "x64"] },
+        { "target": "zip",  "arch": ["arm64", "x64"] }
+      ]
+    },
+    "mas": {
+      "category": "public.app-category.developer-tools",
+      "icon": "build/icon.icns",
+      "entitlements": "build/entitlements.mas.plist",
+      "entitlementsInherit": "build/entitlements.mas.inherit.plist",
+      "hardenedRuntime": false,
+      "type": "distribution"
+    },
+    "dmg": {
+      "title": "memvis",
+      "contents": [
+        { "x": 130, "y": 220, "type": "file" },
+        { "x": 410, "y": 220, "type": "link", "path": "/Applications" }
+      ],
+      "window": { "width": 540, "height": 380 }
+    }
+  },
+  "devDependencies": {
+    "electron": "^29.0.0",
+    "electron-builder": "^24.0.0"
+  }
+}
