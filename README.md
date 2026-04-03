@@ -44,7 +44,7 @@ Addresses shown are **static** — captured before the program runs.
 Stack locals and heap allocations require a live debugger (GDB).
 
 ## Project structure
-
+```
 memvis/
 ├── backend/
 │   └── memvis_backend.c    ← entire backend, one C file
@@ -53,7 +53,7 @@ memvis/
 ├── main.js          ← Electron main process
 ├── preload.js       ← IPC security bridge
 └── renderer/        ← HTML + CSS + JS frontend
-
+```
 ## License
 
 © 2025 Krithik Tamilvanan. All rights reserved.
