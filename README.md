@@ -1,64 +1,46 @@
 # memvis
 
-C memory visualizer. Shows the real address of every symbol (functions, globals, statics) plus the live process memory map — stack, heap, libc, and more.
+C Memory Visualizer — see where every variable and function lives in memory.
 
-## How it works
+**Built by Krithik Tamilvanan · © 2025**
 
-```
-your .c file
-    │
-    ▼
-backend/memvis_backend  (pure C, ~200 lines)
-    ├── gcc -g -O0        compile the source
-    ├── nm --defined-only  extract every symbol + address
-    ├── fork() + SIGSTOP   run the binary, freeze it immediately
-    ├── /proc/<pid>/maps   read live virtual memory layout
-    └── JSON → stdout      emit everything structured
+---
 
-Electron reads that JSON and renders the UI.
-```
+## What it does
+
+Paste or open any `.c` file, click **Analyse**, and instantly see:
+- The memory address of every function and global variable
+- Which segment each symbol lives in (`.text`, `.data`, `.bss`, `.rodata`)
+- A proportional address space map of your entire program
+- Hover any address for an inline description of what it holds
 
 ## Requirements
 
-| Tool | macOS | Linux |
-|------|-------|-------|
-| gcc  | `xcode-select --install` | `sudo apt install gcc` |
-| nm   | included with Xcode CLT | `sudo apt install binutils` |
-| Node ≥ 18 | https://nodejs.org | same |
+- macOS (Ventura / Sonoma / Sequoia)
+- Xcode Command Line Tools: `xcode-select --install`
+- Node.js ≥ 18: https://nodejs.org
 
 ## Run
-
 ```bash
-# 1. Build the C backend (one time)
-make
-
-# 2. Install Electron and run
 cd electron
 npm install
 npm start
 ```
 
-## Build macOS .app
-
+## Build .app / DMG
 ```bash
 cd electron
-npm run dist        # → dist/memvis-1.0.0-arm64.dmg
+npm run dist   # → dist/memvis-1.0.0-arm64.dmg
 ```
+
+## How it works
+
+1. Your C source is compiled with `gcc -g -O0`
+2. `nm --defined-only` reads every symbol and address from the binary
+3. `size` reads segment sizes (`.text`, `.data`, `.bss`)
+4. Results stream into the Electron UI as JSON
+
+Addresses shown are **static** — captured before the program runs.
+Stack locals and heap allocations require a live debugger (GDB).
 
 ## Project structure
-
-```
-memvis/
-├── Makefile
-├── backend/
-│   └── memvis_backend.c    ← the entire backend (one C file)
-└── electron/
-    ├── package.json
-    └── src/
-        ├── main.js         ← Electron main, spawns backend
-        ├── preload.js      ← IPC bridge
-        └── renderer/
-            ├── index.html
-            ├── style.css
-            └── app.js
-```
