@@ -1,0 +1,15 @@
+# Compiled backend binary
+backend/memvis_backend
+
+# Electron dependencies
+electron/node_modules/
+
+# Build output
+electron/dist/
+
+# macOS system files
+.DS_Store
+**/.DS_Store
+
+# Icon intermediate files
+electron/build/icon.iconset/
